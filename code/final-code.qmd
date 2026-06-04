@@ -1,0 +1,15 @@
+---
+title: "Final"
+author: "Ben Wollack"
+date: "2026/06/09"
+format:
+  pdf:
+    toc: true
+editor: source
+execute:
+  message: false
+  warning: false
+---
+
+
+
