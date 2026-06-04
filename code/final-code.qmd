@@ -11,5 +11,21 @@ execute:
   warning: false
 ---
 
+# Set Up
 
+```{r}
+#| label: read-in
+
+# read in packages
+library(tidyverse)
+library(here)
+
+# read in data
+nest <- read_csv(here("data", "nest_data_final.csv"))
+```
+
+
+# Problem 1
+
+## a.
 
