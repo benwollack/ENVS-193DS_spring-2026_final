@@ -13,6 +13,8 @@ execute:
 
 # Set Up
 
+The link to the GitHub repo can be found here[https://github.com/benwollack/ENVS-193DS_spring-2026_final].
+
 ```{r}
 #| label: read-in
 
@@ -28,4 +30,52 @@ nest <- read_csv(here("data", "nest_data_final.csv"))
 # Problem 1
 
 ## a.
+
+In part 1, my coworker used a generalized linear model. I can tell because the results state a probability between two binary outcomes, the American Avocet using the habit or the American Avocet not using the habitat. This response variable is binary, which necessistates a generalized linear model to look at the relationship between that and the predictor of distance to the water.
+
+In part 2, my coworker used a chi-squared test. I can tell because the results compare two categorical variables, habitat and bird species. Looking at the relationship between two categorical variables and seeing if one has an influence on the other requires using a chi-squared test.
+
+## b.
+
+## c.
+
+# Problem 2
+
+## a.
+
+## b.
+
+## c.
+
+## d.
+
+## e.
+
+## f.
+
+## g.
+
+## h.
+
+## i.
+
+## j.
+
+## k.
+
+# Problem 3
+
+## a. 
+
+## b.
+
+## c.
+
+## d.
+
+## e.
+
+## f.
+
+## g.
 
