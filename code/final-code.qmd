@@ -37,7 +37,15 @@ In part 2, my coworker used a chi-squared test. I can tell because the results c
 
 ## b.
 
+We found that distance to the water's edge influences how birds utilize microhabitats.
+
+We found a significant relationship between bird species (American Avocet, Forster’s Tern, Black-necked Stilt) and the habitats they are found in (managed pond, non-tidal marsh, salt pond, tidal marsh, or tidal mudflat).
+
 ## c.
+
+*Water depth* may influence the probability of microhabitat use. The microhabitats are all aquatic, and that water depth may influence things like the ability for birds to wade and the availabiliy of various food sources. Water depth is a continuous variable which can be measured in a unit such as cm or meters. 
+
+For the sake of data collection, it would be helpful to specify something specific and easily measurable like maximum water depth or average water depth after taking multiple measurements of the microhabitat.
 
 # Problem 2
 
