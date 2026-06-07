@@ -353,9 +353,17 @@ We found that the height of an acacia tree and the species of Acacia Ant (*Crean
 
 ## a.
 
+My visualizations from homework 2 are barebones, straightforward and only analyze one predictor variable at a time, and it's also clear what the predictor is versus the response (based on axes). By contrast, my affective visualization is abstract, looks at many predictors and does not clearly distinguish what the response variable is; everything interacts with each other. Neither predictor I used in my homework 2 visualizations were used in the affective visualization.
+
+However, all visualizations include the response variable, distance walked, in them.
+
+My homework 2 visualizations (looking at lunch location and temperature compared to distance walked) don't really show any relationship between the predictor and response (there may be a slight correlation for temperature). It's much harder to piece together a correlation from the affective visualization, but it appears that calendar events and day of the week had an influence on distance walked (this was more apparent in my infographic than the affective visualization).
+
+My feedback from workshop 9 was to make the visualization larger so that the small details, which represent the data, could be seen. I also changed how calendar events was represented to make it easier to read, and I decided to show day of the week rather than temperature since I thought that would be more interesting.
+
 ## b.
 
-Temperature got no mention in my infographic or affective visualization, so I think it's time to give it some love. Although my primary question was seeing if day of the week influenced distance walked, I also wanted to know how my other predictors influenced it, and one of those predictors was temperature. I predicted that as temperature went up, my distance walked would decrease since I wouldn't want to walk in the heat.
+Temperature got no mention in my infographic or affective visualization, so I think it's time to give it some love, and I want to know if there was a statistically significant relationship. Although my primary question was seeing if day of the week influenced distance walked, I also wanted to know how my other predictors influenced it, and one of those predictors was temperature. I predicted that as temperature went up, my distance walked would decrease since I wouldn't want to walk in the heat.
 
 Temperature is a continuous variable. My app for measuring temperature was only accurate to the nearest degree, which is why all data took on integer values. However, a prediction for a temperature of 17.5 \U00B0 C makes sense (as opposed to a prediction for 17.5 elephants). 
 
