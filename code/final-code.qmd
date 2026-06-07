@@ -22,10 +22,13 @@ The link to the GitHub repo can be found here\[https://github.com/benwollack/ENV
 library(tidyverse)
 library(here)
 library(DHARMa)
+library(MuMIn)
 library(ggeffects)
+library(janitor)
 
 # read in data
 nest <- read_csv(here("data", "nest_data_final.csv"))
+walk <- read_csv(here("data", "ben-data-tracker.csv"))
 ```
 
 ```{r}
@@ -371,13 +374,205 @@ Distance walked is also a continuous variable that I was able to measure down to
 
 ## c.
 
+### Assumptions & Analysis
+
+Before fitting the model, we need to need to confirm that errors are independent. Based on how I collected data, each observation is independent, so errors should be independent too. We also need to confirm linearity. 
+
+Here is an exact copy of the code/visualization from homework 3 (with all of the data).
+
+```{r}
+#| label: visual-walk
+
+# create a new object to clean data
+walk_clean <- walk |> 
+  # remove uppercases and add underscores
+  clean_names() |> 
+  # remove N/A values
+  drop_na()
+
+# create a scatterplot for the data using walk_clean
+ggplot(walk_clean,
+       # x-axis: high temperature (in celsius)
+       # y-axis: distance walked (in km)
+       # color: set color by lunch location
+       mapping = aes(x = high_temperature_c,
+                     y = distance_walked_km)) +
+  # once again starting y from 0
+  # It would not make sense to set temperature to 0 too
+  # (this would make it hard to visualize the data's spread), 
+  # so I am leaving the x-axis as is
+  scale_y_continuous(limits=c(0, 14)) +
+  # create a scatterplot with pink points
+  geom_point(color = "violetred4") +
+  # setting theme to classic
+  theme_classic() +
+  # removing legend
+  theme(legend.position = "None") +
+  # renaming axes and title
+  labs(
+    # renaming x-axis
+    x = "High Temperature (\U00B0 C)",
+    # renaming y-axis
+    y = "Distance Walked (km)",
+    # creating subtitle with last observation
+    subtitle = "Last Observation: 2026, May 24th"
+  ) +
+  # changing colors of various elements to improve contrast
+  theme(
+    # change x-axis color
+    axis.text.x = element_text(color = "black"),
+    # change y-axis color
+    axis.text.y = element_text(color = "black"),
+    # change panel background
+    panel.background = element_rect(fill = "cornsilk3"),
+    # change panel line colors to remove them
+    panel.grid = element_line(color = "cornsilk3"))
+```
+
+Although the data is scattered, it appears there could be some sort of linear relationship (a slightly positive relationship). Furthermore, it doesn't appear like the data follows a relationship that is not linear; it's either linear or there's no relationship. It would also make sense for this relationship to be linear, especailly over such a small range of temperatures.
+
+We now need to run the model to check for homoscedasticity and normal distribution of the residuals
+
+```{r}
+#| label: walk-model
+
+# create a linear model of distance walked as a function of temperature
+# use the cleaned walking data frame
+walk_model <- lm(
+  distance_walked_km ~ high_temperature_c,
+  data = walk_clean
+  )
+```
+
+Now we can check for the other two assumptions using the diagnostics plots.
+
+```{r}
+#| label: walk-diagnostics
+
+# displays plots in a 2x2 grid using the linear model
+par(mfrow = c(2, 2))
+plot(walk_model)
+```
+
+The Residuals vs Fitted plot and the Scale-Location plot have no apparent patterns, so the residuals are homoscedastic. The QQ plot of the residuals shows a deviation in the upper tail, but the center falls on the reference line for normality, and the deviation is not severe, so the residuals are normal enough to meet assumptions. Furtheremore, the Residuals vs Leverage plot shows no outliers in the data since all data is inside Cook's Distance.
+
+Now we can get the summary statistics and a table of predictions for the model.
+
+```{r}
+#| label: summary-and-predict
+
+# summarize model to get summary statistics
+summary(walk_model)
+
+# generate a data frame of predictions from the model based on the
+# high temperature (will be used in visualization)
+walk_predict <- ggpredict(
+  walk_model,
+  terms = "high_temperature_c"
+)
+```
+
+The summary shows that the residual median is a bit off from 0 (-0.239), but not so far that it suggests non-normality in the residuals. The quartiles and min/max also don't line up perfectly, but once again, not so much that it suggests non-normality.
+
+As for the summary statistics, the equation ends up being: `distance walked = -0.36 + 0.3918 * temperature`
+
+Note that the intercept is not statistically significant (p = 0.9197), but the slope is (p = 0.0317) using a significance level of $\alpha$ = 0.05.
+
+### Correlation (Effect Size)
+
+We can run Pearson's Correlation to see how strong of a relationship there is. This requires checking that both temperature and distance walked are normally distributed.
+
+```{r}
+#| label: normality-check
+
+# create a histogram for the temperature
+# use the cleaned walking data and use the temperature column
+ggplot(
+  data = walk_clean,
+  aes(x = high_temperature_c)) +
+  # create histogram with custom color, Rice Rule says to use 6 bins
+  geom_histogram(bins = 6,
+                 color = "black",
+                 fill = "violetred4") +
+  # rename axes
+  labs(
+    x = "Temperature (\U00B0 C)",
+    y = "Count"
+  ) +
+  # change theme to remove gridlines
+  theme_classic()
+```
+
+There is enough right skewness here to violate the assumption of normality. However, we can run Spearman's correlation instead. This requires that the data is monotonic. Based on the initial visualization, it doesn't appear like the data is going down and then up or vice versa; it's either consistently trending in one direction or not trending in any direction. Therefore, we can run Spearman's correlation.
+
+```{r}
+#| label: correlation
+
+# run spearman's correlation test
+cor.test(walk_clean$high_temperature_c, walk_clean$distance_walked_km,
+         method = "spearman",
+         exact = FALSE)
+```
+
+The test returns $\rho$ = 0.415 (moderate correlation) and p = 0.018
+
 ## d.
+
+We can overlay the original visualization with the model.
+
+```{r}
+#| label: walk-visualization
+
+# layer 1: create a scatterplot for the underlying data
+ggplot(walk_clean,
+       mapping = aes(x = high_temperature_c,
+                     y = distance_walked_km)) +
+  # scale y to start at 0
+  scale_y_continuous(limits=c(0, 14)) +
+  # create a scatterplot with pink points, make points large but outlined
+  geom_point(color = "violetred4",
+             size = 1.5,
+             shape = 21) +
+  # layer 2: show the 95% confidence interval
+  # use ribbon gemoetry using the walking model predictions
+  geom_ribbon(data = walk_predict,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high,
+                  # fill using different color than points
+                  fill = "chocolate4"),
+              # make ribbon transparent
+              alpha = 0.2) +
+  geom_line(data = walk_predict,
+              aes(x = x,
+                  y = predicted,
+                  color = "chocolate4",
+                  linewidth = 1
+                  )
+            ) +
+  # setting theme to classic
+  theme_classic() +
+  # removing legend
+  theme(legend.position = "None") +
+  # renaming axes and title
+  labs(
+    x = "High Temperature (\U00B0 C)",
+    y = "Distance Walked (km)",
+    subtitle = "Last Observation: 2026, May 24th"
+  ) +
+  # changing colors of various elements to improve contrast
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    panel.background = element_rect(fill = "cornsilk3"),
+    panel.grid = element_line(color = "cornsilk3"))
+```
+
 
 ## e.
 
 ## f.
-
-## g.
 
 Ask Prof Bui
 - Clarification on how many/which models to run (just 2, or do I need the null and single variable ones too?)
