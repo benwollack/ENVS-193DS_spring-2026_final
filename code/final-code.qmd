@@ -22,6 +22,7 @@ The link to the GitHub repo can be found here\[https://github.com/benwollack/ENV
 library(tidyverse)
 library(here)
 library(DHARMa)
+library(ggeffects)
 
 # read in data
 nest <- read_csv(here("data", "nest_data_final.csv"))
@@ -163,7 +164,7 @@ Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mi
 #| output: FALSE
 
 # model 0: glm with no interaction term
-model0 <- glm(
+no_int <- glm(
   # formula for all predictors, no interaction
   case_control ~ height_cm + ant_species,
   # use cleaned data frame for nest data
@@ -173,7 +174,7 @@ model0 <- glm(
 )
 
 # model 1: glm with ant species as an interaction term with height
-model1 <- glm(
+int_term <- glm(
   # asterisk to indicate an interaction
   case_control ~ height_cm * ant_species,
   # use cleaned data
@@ -190,11 +191,13 @@ model1 <- glm(
 
 # put both models into calculating AICc
 AICc(
-  model0,
-  model1
+  no_int,
+  int_term
 ) |> 
   # sorts the AICc values so the lowest (best model) appears first
   arrange(AICc)
+
+summary(int_term)
 ```
 
 The AICc for the model with an interaction term is 238.12 while the one without an interaction term is 258.89. The model with an interaction term is significantly higher (that is, it exceeds the other model by more than 2), so this is the best model for the system.
@@ -208,13 +211,110 @@ The best model as determined by Akaike’s Information Criterion (AIC) was the m
 
 # display diagnostics for the glm with the interaction term
 plot(
-  simulateResiduals(model1)
+  simulateResiduals(int_term)
   )
 ```
 
 The QQ plot residuals roughly follow the reference line for a uniform distribution. The residuals vs predicted plot appears random with no noticeable patterns. From this, both diagnostic plots show that the glm assumptions are met.
 
 ## h.
+
+```{r}
+#| label: predictions
+
+# create a new data frame that stores predictions from the model
+nest_predict <- ggpredict(
+  # use the model with the interaction term
+  int_term,
+  # create predictions for nest probability  from height by every cm between 50-600cm, also consider ant species
+  terms = c(
+    "height_cm [50:600 by = 1]", 
+    "ant_species")
+) |> 
+  # rename model data frame columns to align with the nest_clean data frame
+  rename(
+    height_cm = x,
+    case_control = predicted,
+    ant_species = group
+  )
+```
+
+```{r}
+#| label: glm-visual
+
+# create the base layer using the nest_clean data frame
+ggplot(
+  data = nest_clean,
+  # continuous predictor, height_cm, on x-axis
+  # binomial response, case_control (nest probability), on y-axis
+  aes(
+    x = height_cm,
+    y = case_control
+  )
+) +
+  # layer 1: create points for the underlying data
+  geom_point(
+    # color and group data by ant species
+    aes(color = ant_species),
+    # using an outlined shape to make data distinguishable and to ensure the model line stands out more
+    shape = 22
+  ) +
+  # layer 2: create the model line for each ant species
+  geom_line(
+    # switch to using the model predictions data
+    data = nest_predict,
+    # use the same axes and groupings as before
+    aes(
+      x = height_cm,
+      y = case_control,
+      color = ant_species
+    ),
+    # ensure line is thick enough to be seen clearly
+    linewidth = 1
+  ) +
+  # layer 3: 95% confidence interval for nest probability, as a ribbon
+  geom_ribbon(
+    # continue using the nest_predict data frame
+    data = nest_predict,
+    # 95% CI is pulled from conf.low and conf.high, use fill for color
+    aes(
+      x = height_cm,
+      y = case_control,
+      ymin = conf.low,
+      ymax = conf.high,
+      fill = ant_species
+    ),
+    # make ribbon transparent to ensure line stands out
+    alpha = 0.2
+  ) +
+  # create a different plot for each ant species
+  facet_wrap(~ ant_species) +
+  # adjust line and point colors
+  scale_color_manual(values = c(
+    "C. sjostedti" = "darkolivegreen",
+    "C. mimosae" = "firebrick4",
+    "C. nigriceps" = "goldenrod"
+  )) +
+  # adjust ribbon color 
+  scale_fill_manual(values = c(
+    "C. sjostedti" = "darkolivegreen",
+    "C. mimosae" = "firebrick4",
+    "C. nigriceps" = "goldenrod"
+  )) +
+  # adjust x-axis to only include heights within nest_clean
+  scale_x_continuous(
+    limits = c(50, 600)
+  ) +
+  # rename axes to be more descriptive
+  labs(
+    x = "Tree Height (cm)",
+    y = "Probability of Nest"
+  ) +
+  # remove gridlines and the grey background
+  theme_classic() +
+  # remove the redundant legend
+  theme(legend.position = "none")
+```
 
 ## i.
 
@@ -223,6 +323,8 @@ The QQ plot residuals roughly follow the reference line for a uniform distributi
 ## k.
 
 # Problem 3
+
+[Will most likely choose calendar events and distance walked and run ANOVA on it]
 
 ## a.
 
