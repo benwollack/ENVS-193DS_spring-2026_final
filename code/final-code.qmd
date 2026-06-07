@@ -13,7 +13,7 @@ execute:
 
 # Set Up
 
-The link to the GitHub repo can be found here[https://github.com/benwollack/ENVS-193DS_spring-2026_final].
+The link to the GitHub repo can be found here\[https://github.com/benwollack/ENVS-193DS_spring-2026_final\].
 
 ```{r}
 #| label: read-in
@@ -77,7 +77,6 @@ ggplot(
   )
 ```
 
-
 # Problem 1
 
 ## a.
@@ -94,7 +93,7 @@ For part 2: We found a significant relationship between bird species (American A
 
 ## c.
 
-*Water depth* may influence the probability of microhabitat use. The microhabitats are all aquatic, and that water depth may influence things like the ability for birds to wade and the availabiliy of various food sources. Water depth is a continuous variable which can be measured in a unit such as cm or meters. 
+*Water depth* may influence the probability of microhabitat use. The microhabitats are all aquatic, and that water depth may influence things like the ability for birds to wade and the availabiliy of various food sources. Water depth is a continuous variable which can be measured in a unit such as cm or meters.
 
 For the sake of data collection, it would be helpful to specify something specific and easily measurable like maximum water depth or average water depth after taking multiple measurements of the microhabitat.
 
@@ -139,13 +138,22 @@ The 1s in the dataset represent trees that have bird nests in them, and the 0s r
 
 ### Tree Height
 
-Tree height is a continuous variable [ask Prof Bui for a free link to study]
+Tree height is a continuous variable \[ask Prof Bui for a free link to study\]
 
 ### Acacia Ant Species
 
-Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mimosae and C. nigriceps, which represent different species of Acacia Ants. 
+Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mimosae and C. nigriceps, which represent different species of Acacia Ants.
 
 ## d.
+
+5 models total:
+
+*+* indicates no interaction, *X* indicates an interaction
+
+| Model number | Height | Ant Species |      Model Description       |
+|--------------|:------:|:-----------:|:----------------------------:|
+| 0            |   \+   |     \+      |  Both terms, no interaction  |
+| 1            |   X    |      X      | Both terms, interaction term |
 
 ## e.
 
@@ -163,7 +171,7 @@ Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mi
 
 # Problem 3
 
-## a. 
+## a.
 
 ## b.
 
@@ -176,4 +184,3 @@ Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mi
 ## f.
 
 ## g.
-
