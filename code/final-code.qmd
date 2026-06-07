@@ -142,7 +142,11 @@ The 1s in the dataset represent trees that have bird nests in them, and the 0s r
 
 ### Tree Height
 
-Tree height is a continuous variable \[ask Prof Bui for a free link to study\]
+Tree height is a continuous variable. The study used two logistic models, one of which predicted that height positively influences nest probability (Results, paragraph 2). However, the other model predicted that height has no influence on nest probability (Results, paragraph 3).
+
+Ant species is a categorical variable with 3 levels. The study stated that *C. mimosae* and *C. nigriceps* are aggressive species while *C. sjoestedti* is not aggressive (Introduction, paragraph 2). The study predicted that aggressive ants may offer protection to bird nests, but it notes that aggressive ants may also attack bird nests (Introduction, paragraph 3). The models generated predicted that trees with *C. nigriceps* had a greater probability of nests than trees with *C. mimosae* (Results, paragraph 2) and that trees with *C. mimosae* had a greater probability of nests than trees with *C. sjostedti* (Results, paragraph 3). 
+
+Neither model in the study used an interaction term (Methods, paragraph 2).
 
 ### Acacia Ant Species
 
@@ -318,17 +322,44 @@ ggplot(
 
 ## i.
 
+Figure 1
+
+**Tree Height and Acacia Ant Species Influences the Probability of Bird Nesting**
+
+Colored lines represent the predicted probability of finding a bird nest in a tree as a function of tree height (in cm) and ant species (*Creanomaster sjostedti*, *C. mimosae* and *C. nigriceps*) present in the tree. Probabilities were calculated using a generalized linear model (GLM). The ribbons around the line represent the 95% confidence interval for the probability of finding a bird nest. The outlined squares represent the underlying data. The different colors and plots represent the data and model for an individual ant species.
+
 ## j.
+
+```{r}
+#| label: predict-600
+
+# use the interaction term model to create a prediction at height 600cm
+ggpredict(
+  # use the interaction term model
+  int_term,
+  # make the prediction at height 600cm for all ant species
+  terms = 
+    c("height_cm [600]", "ant_species")
+)
+```
 
 ## k.
 
+We found that the height of an acacia tree and the species of Acacia Ant (*Creanomaster sjostedti*, *C. mimosae* and *C. nigriceps*) present influences the probability of finding a bird nest in the tree. All trees had a greater probability of having nests as height increased, but height influenced nest probability more in trees with *C. mimosae* than trees with *C. sjostedti*, and height influenced nest probability even more in trees with *C. nigriceps* than for trees with both other species. At a tree height of 600cm, trees with *C. sjostedti* had a 20% chance (95% CI: [0.00, 0.99]) of a nest, trees with *C. mimosae* had a 74% chance (95% CI: [0.48, 0.90]) of a nest and trees with *C. nigriceps* (95% CI: [1.00, 1.00]) had a near 100% chance of a nest. *C. mimosae* and *C. nigriceps* are considered aggressive ant species while *C. sjoestedti* is not aggressive. Despite this aggression, the ants do not attack bird nests; rather, the birds benefit from ant aggression since it drives away nest predators, explaining why bird nests are more likely to be found in trees with aggressive ant species.
+
 # Problem 3
 
-[Will most likely choose calendar events and distance walked and run ANOVA on it]
+[Will most likely choose calendar events and distance walked and run Kruskal-Wallis
 
 ## a.
 
 ## b.
+
+Temperature got no mention in my infographic or affective visualization, so I think it's time to give it some love. Although my primary question was seeing if day of the week influenced distance walked, I also wanted to know how my other predictors influenced it, and one of those predictors was temperature. I predicted that as temperature went up, my distance walked would decrease since I wouldn't want to walk in the heat.
+
+Temperature is a continuous variable. My app for measuring temperature was only accurate to the nearest degree, which is why all data took on integer values. However, a prediction for a temperature of 17.5 \U00B0 C makes sense (as opposed to a prediction for 17.5 elephants). 
+
+Distance walked is also a continuous variable that I was able to measure down to a hundredth of a kilometer.
 
 ## c.
 
@@ -341,6 +372,7 @@ ggplot(
 ## g.
 
 Ask Prof Bui
-- Paper access
 - Clarification on how many/which models to run (just 2, or do I need the null and single variable ones too?)
 - Want to make sure my justification for choosing the interaction term is correct here
+- Double check on interpretation, for statistics, is just the prediction at 600cm okay, or do I need more?
+- Since my temp data is only precise to the nearest degree, does that invalidate the model?
