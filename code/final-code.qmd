@@ -133,7 +133,17 @@ slice_sample(
 
 ## b.
 
+The 1s in the dataset represent trees that have bird nests in them, and the 0s represent trees that do not have bird nests in them (called "available" in the study).
+
 ## c.
+
+### Tree Height
+
+Tree height is a continuous variable [ask Prof Bui for a free link to study]
+
+### Acacia Ant Species
+
+Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mimosae and C. nigriceps, which represent different species of Acacia Ants. 
 
 ## d.
 
