@@ -21,6 +21,7 @@ The link to the GitHub repo can be found here\[https://github.com/benwollack/ENV
 # read in packages
 library(tidyverse)
 library(here)
+library(DHARMa)
 
 # read in data
 nest <- read_csv(here("data", "nest_data_final.csv"))
@@ -44,6 +45,7 @@ ggplot(
 ```{r}
 #| label: ant-bird
 #| echo: FALSE
+#| output: FALSE
 
 # visualizing ant species vs chance of bird use (case_control = 1)
 # ignore NONE and TP, will be removed later
@@ -60,6 +62,7 @@ ggplot(
 ```{r}
 #| label: three-var
 #| echo: FALSE
+#| output: FALSE
 
 # visualizing tree height and ant species vs chance of bird use
 ggplot(
@@ -146,8 +149,6 @@ Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mi
 
 ## d.
 
-5 models total:
-
 *+* indicates no interaction, *X* indicates an interaction
 
 | Model number | Height | Ant Species |      Model Description       |
@@ -157,9 +158,61 @@ Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mi
 
 ## e.
 
+```{r}
+#| label: model-run
+#| output: FALSE
+
+# model 0: glm with no interaction term
+model0 <- glm(
+  # formula for all predictors, no interaction
+  case_control ~ height_cm + ant_species,
+  # use cleaned data frame for nest data
+  data = nest_clean,
+  # set family to binomial due to the binomial response variable
+  family = "binomial"
+)
+
+# model 1: glm with ant species as an interaction term with height
+model1 <- glm(
+  # asterisk to indicate an interaction
+  case_control ~ height_cm * ant_species,
+  # use cleaned data
+  data = nest_clean,
+  # set family to binomial due to the binomial response variable
+  family = "binomial"
+)
+```
+
 ## f.
 
+```{r}
+#| label: AICc
+
+# put both models into calculating AICc
+AICc(
+  model0,
+  model1
+) |> 
+  # sorts the AICc values so the lowest (best model) appears first
+  arrange(AICc)
+```
+
+The AICc for the model with an interaction term is 238.12 while the one without an interaction term is 258.89. The model with an interaction term is significantly higher (that is, it exceeds the other model by more than 2), so this is the best model for the system.
+
+The best model as determined by Akaike’s Information Criterion (AIC) was the model where Acacia Ant species and tree height interact to determine the probability of a bird nest being present in the tree. The effect of tree height on the probability of a nest varies based on the ant species present in the tree.
+
 ## g.
+
+```{r}
+#| label: diagnostics
+
+# display diagnostics for the glm with the interaction term
+plot(
+  simulateResiduals(model1)
+  )
+```
+
+The QQ plot residuals roughly follow the reference line for a uniform distribution. The residuals vs predicted plot appears random with no noticeable patterns. From this, both diagnostic plots show that the glm assumptions are met.
 
 ## h.
 
@@ -184,3 +237,8 @@ Acacia Ant Species is a categorical variable with the levels C. sjostedti, C. mi
 ## f.
 
 ## g.
+
+Ask Prof Bui
+- Paper access
+- Clarification on how many/which models to run (just 2, or do I need the null and single variable ones too?)
+- Want to make sure my justification for choosing the interaction term is correct here
