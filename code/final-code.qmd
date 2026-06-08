@@ -5,6 +5,10 @@ date: "2026/06/09"
 format:
   pdf:
     toc: true
+    include-in-header:
+      - text: |
+          \hyphenpenalty=10000
+          \exhyphenpenalty=10000
 editor: source
 execute:
   message: false
@@ -13,7 +17,7 @@ execute:
 
 # Set Up
 
-The link to the GitHub repo can be found here\[https://github.com/benwollack/ENVS-193DS_spring-2026_final\].
+The link to the GitHub repo can be found [here](https://github.com/benwollack/ENVS-193DS_spring-2026_final).
 
 ```{r}
 #| label: read-in
@@ -89,9 +93,9 @@ ggplot(
 
 ## a.
 
-In part 1, my coworker used a generalized linear model. I can tell because the results state a probability between two binary outcomes, the American Avocet using the habit or the American Avocet not using the habitat. This response variable is binary, which necessistates a generalized linear model to look at the relationship between that and the predictor of distance to the water.
+In part 1, my coworker used a generalized linear model. I can tell because the results state a probability between two binary outcomes, the American Avocet using the habit or the American Avocet not using the habitat. This response variable is binary, which necessitates a generalized linear model to look at the relationship between that and the predictor of distance to the water.
 
-In part 2, my coworker used a chi-squared test. I can tell because the results compare two categorical variables, habitat and bird species. Looking at the relationship between two categorical variables and seeing if one has an influence on the other requires using a chi-squared test.
+In part 2, my coworker used a chi-squared test. I can tell because the results compare two categorical variables: habitat and bird species. Looking at the relationship between two categorical variables and seeing if one has an influence on the other requires using a chi-squared test.
 
 ## b.
 
