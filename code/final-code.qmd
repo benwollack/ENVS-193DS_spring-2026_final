@@ -34,6 +34,7 @@ walk <- read_csv(here("data", "ben-data-tracker.csv"))
 ```{r}
 #| label: height-bird
 #| echo: FALSE
+#| output: FALSE
 
 # visualizing tree height vs chance of bird use (case_control = 1)
 ggplot(
@@ -113,7 +114,8 @@ For the sake of data collection, it would be helpful to specify something specif
 
 # create new object nest_clean from nest
 nest_clean <- nest |> 
-  # only keep the columns for ant species, tree height and nest presence (case_control)
+  # only keep the columns for ant species, tree height and nest presence 
+  # (case_control)
   select(ant_species, height_cm, case_control) |> 
   # change species to full Latin names
   mutate(ant_species = case_when(
@@ -233,7 +235,8 @@ The QQ plot residuals roughly follow the reference line for a uniform distributi
 nest_predict <- ggpredict(
   # use the model with the interaction term
   int_term,
-  # create predictions for nest probability  from height by every cm between 50-600cm, also consider ant species
+  # create predictions for nest probability from height by every cm 
+  # between 50-600cm, also consider ant species
   terms = c(
     "height_cm [50:600 by = 1]", 
     "ant_species")
@@ -263,7 +266,8 @@ ggplot(
   geom_point(
     # color and group data by ant species
     aes(color = ant_species),
-    # using an outlined shape to make data distinguishable and to ensure the model line stands out more
+    # using an outlined shape to make data distinguishable and to ensure the 
+    # model line stands out more
     shape = 22
   ) +
   # layer 2: create the model line for each ant species
@@ -329,7 +333,7 @@ Figure 1
 
 **Tree Height and Acacia Ant Species Influences the Probability of Bird Nesting**
 
-Colored lines represent the predicted probability of finding a bird nest in a tree as a function of tree height (in cm) and ant species (*Creanomaster sjostedti*, *C. mimosae* and *C. nigriceps*) present in the tree. Probabilities were calculated using a generalized linear model (GLM). The ribbons around the line represent the 95% confidence interval for the probability of finding a bird nest. The outlined squares represent the underlying data. The different colors and plots represent the data and model for an individual ant species.
+Colored lines represent the predicted probability of finding a bird nest in a tree as a function of tree height (in cm) and ant species (*Creanomaster sjostedti*, *C. mimosae* and *C. nigriceps*) present in the tree. Probabilities were calculated using a generalized linear model (GLM). The shaded ribbons around the line represent the 95% confidence interval for the probability of finding a bird nest. The outlined squares represent the underlying data. The different colors and plots represent the data and model for an individual ant species. Data originally from: Lujan. E, et al (2023). Symbiotic acacia ants drive nesting behavior by birds in an African savanna. Biotropica, Volume 55, Issue 6. https://doi.org/10.1111/btp.13276. Accessed 2026/06/04.
 
 ## j.
 
@@ -352,8 +356,6 @@ We found that the height of an acacia tree and the species of Acacia Ant (*Crean
 
 # Problem 3
 
-[Will most likely choose calendar events and distance walked and run Kruskal-Wallis
-
 ## a.
 
 My visualizations from homework 2 are barebones, straightforward and only analyze one predictor variable at a time, and it's also clear what the predictor is versus the response (based on axes). By contrast, my affective visualization is abstract, looks at many predictors and does not clearly distinguish what the response variable is; everything interacts with each other. Neither predictor I used in my homework 2 visualizations were used in the affective visualization.
@@ -368,7 +370,7 @@ My feedback from workshop 9 was to make the visualization larger so that the sma
 
 Temperature got no mention in my infographic or affective visualization, so I think it's time to give it some love, and I want to know if there was a statistically significant relationship. Although my primary question was seeing if day of the week influenced distance walked, I also wanted to know how my other predictors influenced it, and one of those predictors was temperature. I predicted that as temperature went up, my distance walked would decrease since I wouldn't want to walk in the heat.
 
-Temperature is a continuous variable. My app for measuring temperature was only accurate to the nearest degree, which is why all data took on integer values. However, a prediction for a temperature of 17.5 \U00B0 C makes sense (as opposed to a prediction for 17.5 elephants). 
+Temperature is a continuous variable. My app for measuring temperature was only accurate to the nearest degree, which is why all data took on integer values. However, a prediction for a temperature of 17.5$^\circ$ C makes sense (as opposed to a prediction for 17.5 elephants). 
 
 Distance walked is also a continuous variable that I was able to measure down to a hundredth of a kilometer.
 
@@ -469,7 +471,12 @@ summary(walk_model)
 walk_predict <- ggpredict(
   walk_model,
   terms = "high_temperature_c"
-)
+) |> 
+  # rename columns to align with walk_clean data frame
+  rename(
+    high_temperature_c = x,
+    distance_walked_km = predicted
+  )
 ```
 
 The summary shows that the residual median is a bit off from 0 (-0.239), but not so far that it suggests non-normality in the residuals. The quartiles and min/max also don't line up perfectly, but once again, not so much that it suggests non-normality.
@@ -536,20 +543,22 @@ ggplot(walk_clean,
   # layer 2: show the 95% confidence interval
   # use ribbon gemoetry using the walking model predictions
   geom_ribbon(data = walk_predict,
-              aes(x = x,
-                  y = predicted,
+              aes(x = high_temperature_c,
+                  y = distance_walked_km,
                   ymin = conf.low,
-                  ymax = conf.high,
-                  # fill using different color than points
-                  fill = "chocolate4"),
+                  ymax = conf.high),
+              # make ribbon different color than points
+              fill = "chocolate4",
               # make ribbon transparent
               alpha = 0.2) +
   geom_line(data = walk_predict,
-              aes(x = x,
-                  y = predicted,
-                  color = "chocolate4",
-                  linewidth = 1
-                  )
+              aes(x = high_temperature_c,
+                  y = distance_walked_km,
+                  ),
+              # have line color match ribbon color
+              color = "chocolate4",
+              # make line thick so it's visible
+              linewidth = 1
             ) +
   # setting theme to classic
   theme_classic() +
@@ -558,21 +567,33 @@ ggplot(walk_clean,
   # renaming axes and title
   labs(
     x = "High Temperature (\U00B0 C)",
-    y = "Distance Walked (km)",
-    subtitle = "Last Observation: 2026, May 24th"
+    y = "Distance Walked (km)"
   ) +
-  # changing colors of various elements to improve contrast
+  # changing colors of various elements
   theme(
     axis.text.x = element_text(color = "black"),
     axis.text.y = element_text(color = "black"),
     panel.background = element_rect(fill = "cornsilk3"),
-    panel.grid = element_line(color = "cornsilk3"))
+    panel.grid = element_line(color = "cornsilk3"),
+    # made plot background same color as panel
+    plot.background = element_rect(fill = "cornsilk3"))
 ```
-
 
 ## e.
 
+Figure 2
+
+**Temperature Influences my Distance Walked**
+
+The vertical position of the outlined, purple points represent the distance I walked in one day in kilometers, and the horizontal position of those points represents the high temperature in Celsius that day. The brown line represents the predicted distance I walked as a function of high temperature, which was generated using a linear model. The brown, shaded ribbon represents the 95% confidence interval from that linear model. Data was personally collected from 2026/04/23 to 2026/05/24. Distance walked was collected using the app `Map My Walk` and high temperature was collected using the app `Weather Underground`.
+
 ## f.
+
+I found a moderate, positive correlation (Spearman's $\rho$ = 0.415) between the daily high temperature and the distance I walked that day. The high temperature accounted for 11.62% of the variation in distance walked (linear regression, F(1,30) = 5.075, $R^2$ = 0.1162, p = 0.03174, $\alpha$ = 0.05), and with every one degree increase in temperature, the model predicted that I would walk an additional 0.3918 $\pm 2$ 0.1739 (SE) km. 
+
+Contrary to my initial prediction (of an inverse correlation between temperature and distance walked), warm weather actually increased the amount I walked, likely because cold weather caused me to hunker inside, and cold weather is associated with fog, which also causes me to avoid going outside. However, the low $R^2$ shows that other variables likely played a larger role in how much I walked each day.
+
+
 
 Ask Prof Bui
 - Clarification on how many/which models to run (just 2, or do I need the null and single variable ones too?)
