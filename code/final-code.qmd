@@ -595,12 +595,3 @@ The vertical position of the outlined, purple points represent the distance I wa
 I found a moderate, positive correlation (Spearman's $\rho$ = 0.415) between the daily high temperature and the distance I walked that day. The high temperature accounted for 11.62% of the variation in distance walked (linear regression, F(1,30) = 5.075, $R^2$ = 0.1162, p = 0.03174, $\alpha$ = 0.05), and with every one degree increase in temperature, the model predicted that I would walk an additional 0.3918 $\pm$ 0.1739 (SE) km. 
 
 Contrary to my initial prediction (of an inverse correlation between temperature and distance walked), warm weather actually increased the amount I walked, likely because cold weather caused me to hunker inside, and cold weather is associated with fog, which also causes me to avoid going outside. However, the low $R^2$ shows that other variables likely played a larger role in how much I walked each day.
-
-
-
-Ask Prof Bui
-- Clarification on how many/which models to run (just 2, or do I need the null and single variable ones too?)
-- Want to make sure my justification for choosing the interaction term is correct here
-- Double check on interpretation, for statistics, is just the prediction at 600cm okay, or do I need more?
-- Since my temp data is only precise to the nearest degree, does that invalidate the model?
-- DHARMa getting text to not overlap
